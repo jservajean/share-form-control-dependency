@@ -20,100 +20,99 @@
       <#assign fieldValue = args[field.control.params.defaultValueContextProperty]>
    </#if>
 </#if>
-
-<script type="text/javascript">
-var GROUP_LABEL_SEPARATOR = " - ";
-<#list field.control.params.filteredProperty?split(",") as filtProp>
-   var allPropertyOptions${filtProp} = [];
-</#list>
-   
-   
-function getElementsByStartId( idStartName, obj ) {
-    var ar = arguments[2] || new Array();
-
-    if (obj.id&&obj.id.indexOf(idStartName) != -1) {
-        ar.push( obj );
-    }
-    for ( var i = 0, max = obj.childNodes.length; i < max; i++ )
-        getElementsByStartId( idStartName, obj.childNodes[i], ar );
-    
-    return ar;
-}
-
-function getGroupNumbers(itemField){
-   return itemField.value.split(GROUP_LABEL_SEPARATOR)[0];
-}
-
-function belongsItemToGroup(itemField,groupNumber){
-   var groupList = getGroupNumbers(itemField).split("."),
-      belongs = false;
+<#if form.mode != "view">
+   <script type="text/javascript">
+      var GROUP_LABEL_SEPARATOR = " - ";
+      <#list field.control.params.filteredProperty?split(",") as filtProp>
+         var allPropertyOptions${filtProp} = [];
+      </#list>
+         
+      function getElementsByStartId( idStartName, obj ) {
+          var ar = arguments[2] || new Array();
       
-   for (var i=0, max=groupList.length; i < max && !belongs; i++) {
-      belongs = (groupList[i] === groupNumber);
-   }
-   
-   return belongs;
-}
-
-function selectivelyEnablePropertyField(groupNumber, propertyName, optionsList) {
-   var propertyField = getPropertySelectField(propertyName);
-   removeAllPropertyFieldOptions(propertyName);
-   propertyField.disabled = false;
-   for(var i=0, max = optionsList.length; i < max; i++){
-      if(optionsList[i].value == "" || belongsItemToGroup(optionsList[i], groupNumber) ) {
-         propertyField.add(optionsList[i], null);
+          if (obj.id&&obj.id.indexOf(idStartName) != -1) {
+              ar.push( obj );
+          }
+          for ( var i = 0, max = obj.childNodes.length; i < max; i++ )
+              getElementsByStartId( idStartName, obj.childNodes[i], ar );
+          
+          return ar;
       }
-   }
-   if(!propertyField.selectedIndex || propertyField.selectedIndex < 0)
-      propertyField.selectedIndex = 0;
-}
-
-function removeAllPropertyFieldOptions(propertyName) {
-   var propertyField = getPropertySelectField(propertyName);
-   for(var i = propertyField.options.length; i>0; i--){
-      propertyField.remove(i-1);
-   }
-}
-
-function disablePropertyField(propertyName) {
-   removeAllPropertyFieldOptions(propertyName);
-   getPropertySelectField(propertyName).disabled = true;
-}
-
-function getPropertySelectField(propName) {
-   return document.getElementById("${args.htmlid}_prop_" + propName);
-}
-
-function initPropertyFieldList(propertyName, propertyOptionsList) {
-   if (propertyOptionsList.length == 0) {
-      var propertyField = getPropertySelectField(propertyName);
-      for (var i = 0, max = propertyField.options.length;i < max; i++) {
-         propertyOptionsList.push(propertyField.options[i]);
-      }
-   }
-}
-
-function updateChanges${field.name?substring(5)}() {
-   var parentNumber = getGroupNumbers(document.getElementById("${fieldHtmlId}").options[document.getElementById("${fieldHtmlId}").selectedIndex]);
-   var propertyList = ("${field.control.params.filteredProperty}").split(",");
-   
-   for (var i=0, max=propertyList.length; i < max; i++) {
-      var propertyOptions = eval(("allPropertyOptions").concat(propertyList[i]));
-      initPropertyFieldList(propertyList[i], propertyOptions);
-
-      if (parentNumber != "") {
-         selectivelyEnablePropertyField(parentNumber, propertyList[i], propertyOptions);
-      } else {
-         disablePropertyField(propertyList[i]);
-      }
-   }
       
-   return false;
-}
-
-setTimeout("updateChanges${field.name?substring(5)}()", 10);
-</script>
-
+      function getGroupNumbers(itemField){
+         return itemField.value.split(GROUP_LABEL_SEPARATOR)[0];
+      }
+      
+      function belongsItemToGroup(itemField,groupNumber){
+         var groupList = getGroupNumbers(itemField).split("."),
+            belongs = false;
+            
+         for (var i=0, max=groupList.length; i < max && !belongs; i++) {
+            belongs = (groupList[i] === groupNumber);
+         }
+         
+         return belongs;
+      }
+      
+      function selectivelyEnablePropertyField(groupNumber, propertyName, optionsList) {
+         var propertyField = getPropertySelectField(propertyName);
+         removeAllPropertyFieldOptions(propertyName);
+         propertyField.disabled = false;
+         for(var i=0, max = optionsList.length; i < max; i++){
+            if(optionsList[i].value == "" || belongsItemToGroup(optionsList[i], groupNumber) ) {
+               propertyField.add(optionsList[i], null);
+            }
+         }
+         if(!propertyField.selectedIndex || propertyField.selectedIndex < 0)
+            propertyField.selectedIndex = 0;
+      }
+      
+      function removeAllPropertyFieldOptions(propertyName) {
+         var propertyField = getPropertySelectField(propertyName);
+         for(var i = propertyField.options.length; i>0; i--){
+            propertyField.remove(i-1);
+         }
+      }
+      
+      function disablePropertyField(propertyName) {
+         removeAllPropertyFieldOptions(propertyName);
+         getPropertySelectField(propertyName).disabled = true;
+      }
+      
+      function getPropertySelectField(propName) {
+         return document.getElementById("${args.htmlid}_prop_" + propName);
+      }
+      
+      function initPropertyFieldList(propertyName, propertyOptionsList) {
+         if (propertyOptionsList.length == 0) {
+            var propertyField = getPropertySelectField(propertyName);
+            for (var i = 0, max = propertyField.options.length;i < max; i++) {
+               propertyOptionsList.push(propertyField.options[i]);
+            }
+         }
+      }
+      
+      function updateChanges${field.name?substring(5)}() {
+         var parentNumber = getGroupNumbers(document.getElementById("${fieldHtmlId}").options[document.getElementById("${fieldHtmlId}").selectedIndex]);
+         var propertyList = ("${field.control.params.filteredProperty}").split(",");
+         
+         for (var i=0, max=propertyList.length; i < max; i++) {
+            var propertyOptions = eval(("allPropertyOptions").concat(propertyList[i]));
+            initPropertyFieldList(propertyList[i], propertyOptions);
+      
+            if (parentNumber != "") {
+               selectivelyEnablePropertyField(parentNumber, propertyList[i], propertyOptions);
+            } else {
+               disablePropertyField(propertyList[i]);
+            }
+         }
+            
+         return false;
+      }
+      
+      setTimeout("updateChanges${field.name?substring(5)}()", 50);
+   </script>
+</#if>
 <div class="form-field">
    <#if form.mode == "view">
       <div class="viewmode-field">
@@ -157,19 +156,11 @@ setTimeout("updateChanges${field.name?substring(5)}()", 10);
                <#if field.control.params.style??>style="${field.control.params.style}"</#if>
                <#if field.disabled  && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if>>
                <#list field.control.params.options?split(optionSeparator) as nameValue>
-                  <#if nameValue?index_of(labelSeparator) == -1>
-                     <option value="${nameValue?html}"<#if nameValue == fieldValue?string || (fieldValue?is_number && fieldValue?c == nameValue)> selected="selected"</#if>>
-                        <#assign splittedNamedValue=nameValue?split(" - ")>
-                        <#if nameValue?index_of(" - ") == -1>
-                           ${nameValue?html}
-                        <#else>
-                           ${splittedNamedValue[1]}
-                        </#if>
-                     </option>
-                  <#else>
-                     <#assign choice=nameValue?split(labelSeparator)>
-                     <option value="${choice[0]?html}"<#if choice[0] == fieldValue?string || (fieldValue?is_number && fieldValue?c == choice[0])> selected="selected"</#if>>${msgValue(choice[1])?html}</option>
-                  </#if>
+                  <option value="${nameValue?html?split("|")[0]}"<#if nameValue?split("|")[0] == fieldValue?string || (fieldValue?is_number && fieldValue?c == nameValue?split("|")[0])> selected="selected"</#if>>
+                     <#if nameValue?index_of(" - ") != -1>
+                        ${nameValue?split(" - ")[1]?split("|")[0]}
+                     </#if>
+                  </option>
                </#list>
          </select>
          <@formLib.renderFieldHelp field=field />

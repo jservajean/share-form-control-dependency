@@ -64,19 +64,11 @@
                <#if field.control.params.style??>style="${field.control.params.style}"</#if>
                <#if field.disabled  && !(field.control.params.forceEditable?? && field.control.params.forceEditable == "true")>disabled="true"</#if>>
                <#list field.control.params.options?split(optionSeparator) as nameValue>
-                  <#if nameValue?index_of(labelSeparator) == -1>
-                     <option value="${nameValue?html}"<#if nameValue == fieldValue?string || (fieldValue?is_number && fieldValue?c == nameValue)> selected="selected"</#if>>
-                        <#assign splittedNamedValue=nameValue?split(" - ")>
-                        <#if nameValue?index_of(" - ") == -1>
-                           ${nameValue?html}
-                        <#else>
-                           ${splittedNamedValue[1]}
-                        </#if>
-                     </option>
-                  <#else>
-                     <#assign choice=nameValue?split(labelSeparator)>
-                     <option value="${choice[0]?html}"<#if choice[0] == fieldValue?string || (fieldValue?is_number && fieldValue?c == choice[0])> selected="selected"</#if>>${msgValue(choice[1])?html}</option>
-                  </#if>
+                  <option value="${nameValue?html?split("|")[0]}"<#if nameValue?split("|")[0] == fieldValue?string || (fieldValue?is_number && fieldValue?c == nameValue?split("|")[0])> selected="selected"</#if>>
+                     <#if nameValue?index_of(" - ") != -1>
+                        ${nameValue?split(" - ")[1]?split("|")[0]}
+                     </#if>
+                  </option>
                </#list>
          </select>
          <@formLib.renderFieldHelp field=field />
