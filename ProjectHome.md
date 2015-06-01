@@ -1,0 +1,1 @@
+The basic idea is to have specific form controls for Alfresco Share aware of the convention used to configure in our content model those dependencies by convention on their value syntax, and also have those generic form controls empowered though client javascript to update the corresponding form controls according to the updates made by the user on the associated properties.
